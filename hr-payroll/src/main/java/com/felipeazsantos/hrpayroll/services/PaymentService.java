@@ -1,33 +1,20 @@
-package com.felipeazsantos.hrpayroll.services;
-
-import java.util.HashMap;
-import java.util.Map;
+	package com.felipeazsantos.hrpayroll.services;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
 
 import com.felipeazsantos.hrpayroll.entities.Payment;
 import com.felipeazsantos.hrpayroll.entities.Worker;
+import com.felipeazsantos.hrpayroll.feignclients.WorkerFeignClient;
 
 @Service
 public class PaymentService {
 	
-	@Value("${hr-worker.host}")
-	private String workerHost;
-	
 	@Autowired
-	private RestTemplate restTemplate;
+	private WorkerFeignClient workerFeignClient;
 	
 	public Payment getPayment(Long workerId, int days) {
-		Map<String, String> uriVariables = new HashMap<>();
-		uriVariables.put("id", workerId.toString());
-		
-		String url = workerHost + "/workers/{id}";
-		
-		Worker worker = restTemplate.getForObject(url, Worker.class, uriVariables);
-		
+		Worker worker = workerFeignClient.findById(workerId).getBody();
 		return new Payment(worker.getName(), worker.getDailyIncome(), days);
 	}
 }
