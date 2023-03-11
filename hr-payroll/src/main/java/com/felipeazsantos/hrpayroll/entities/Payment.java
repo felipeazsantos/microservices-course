@@ -12,8 +12,6 @@ public class Payment implements Serializable {
 	public Payment() {
 		
 	}
-	
-	
 
 	public Payment(String name, Double dailyIncome, Integer days) {
 		super();
